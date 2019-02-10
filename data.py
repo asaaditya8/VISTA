@@ -5,8 +5,8 @@ from bbox import process_csv, get_gt
 from preprocess import prep_image
 
 
-data_dir = '/home/aaditya/PycharmProjects/Vistas/Data/image_data/'
-bbox_csv = '/home/aaditya/PycharmProjects/Vistas/Data/bbox_train.csv'
+data_dir = '/home/aaditya/PycharmProjects/VISTA/Data/image_data/'
+bbox_csv = '/home/aaditya/PycharmProjects/VISTA/Data/bbox_train.csv'
 
 
 class SelfieDataset(torch.utils.data.Dataset):

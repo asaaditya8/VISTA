@@ -7,8 +7,8 @@ import numpy as np
 from data import SelfieDataset
 from bbox import transform_coord
 
-data_dir = '/home/aaditya/PycharmProjects/Vistas/Data/image_data/'
-bbox_csv = '/home/aaditya/PycharmProjects/Vistas/Data/bbox_train.csv'
+data_dir = '/home/aaditya/PycharmProjects/VISTA/Data/image_data/'
+bbox_csv = '/home/aaditya/PycharmProjects/VISTA/Data/bbox_train.csv'
 
 
 if __name__ == '__main__':
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     testloader = DataLoader(testdataset, batch_size=4,
                             shuffle=True, num_workers=4)
 
-    state_dict = torch.load('/home/aaditya/PycharmProjects/Vistas/yolo_selfie_7.pth')
+    state_dict = torch.load('/home/aaditya/PycharmProjects/VISTA/yolo_selfie_8.pth')
     model.load_state_dict(state_dict)
     model.eval()
     for sample in testloader:
@@ -37,17 +37,33 @@ if __name__ == '__main__':
     pprob = pprob.permute(0, 2, 3, 1).data.cpu().numpy()
     pbox = pbox.permute(0, 2, 3, 1).data.cpu().numpy()
     pprob = pprob.argmax(-1)
+    print('pprob shape: ', pprob.shape)
     pprob = pprob.reshape(-1, 169)
-    pbox = pbox.reshape(-1, 169, 4)
-    print(pprob[0])
-    cells = np.where(pprob[0] > 0.03)[0]
-    print(cells)
+    print('pprob', pprob[0])
+    pbox = pbox.reshape(-1, 169, 5)
+    cells = np.where(pprob[0] > 0.1)[0]
+    print('cells', cells)
+    print('confidence ', pbox[0][..., 4])
 
     ax = plt.gca()
     ax.imshow(np.clip(x[0]*255, 0, 255).astype('uint8'))
     for n in cells:
-        c1, c2, c3 = transform_coord(pbox[0][n], n)
-        print(int(c2), int(c3))
-        rec = patches.Rectangle(c1, c2, c3, edgecolor='r', fill=False, linewidth=4)
+        c1, c2, c3 = transform_coord(pbox[0][n][:4], n)
+        print(c1, c2, c3)
+        rec = patches.Rectangle(c1, c2+50, c3+50, edgecolor='r', fill=False, linewidth=2)
         ax.add_patch(rec)
+
+    tprob = tprob.data.cpu().numpy()
+    tbox = tbox.data.cpu().numpy()
+    tprob = tprob.reshape(-1, 169)
+    print('tprob', tprob[0])
+    cells = np.where(tprob[0] > 0.03)[0]
+    tbox = tbox.reshape(-1, 169, 4)
+
+    for n in cells:
+        c1, c2, c3 = transform_coord(tbox[0][n], n)
+        print(int(c2), int(c3))
+        rec = patches.Rectangle(c1, c2, c3, edgecolor='g', fill=False, linewidth=2)
+        ax.add_patch(rec)
+
     plt.show()
