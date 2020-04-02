@@ -65,7 +65,7 @@ def custom_loss(pprob, pbox, tprob, tbox):
     # print('pred_box_conf', pred_box_conf.shape, pred_box_conf[0])
     # print('true_box_conf', true_box_conf.shape, true_box_conf[0])
     # print(torch.isnan(pbox))
-    masked_box = pbox[..., 0:4] * tprob.reshape(-1, 13, 13, 1).float()
+    masked_box = pbox[..., 0:4] #* tprob.reshape(-1, 13, 13, 1).float()
     pxy = masked_box[..., 0:2]
     pwh = masked_box[..., 2:4]
 
@@ -167,7 +167,7 @@ class Train:
             cur_loss = custom_loss(pprob, pbox, tprob, tbox)
 
             # Accuracy Calculation
-            loss.update(cur_loss.item())
+            loss.update(sum(cur_loss).item())
 
 
         print("Test Results" + " | " + "loss: " + str(loss.avg) + " - acc: " + str(acc.avg))

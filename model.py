@@ -46,11 +46,9 @@ class HeadDetector(nn.Module):
         )
 
         self.regressor = nn.Sequential(
-            nn.Dropout(0.25),
             nn.Conv2d(1280, 640, 1),
             nn.ReLU(),
             nn.BatchNorm2d(640),
-            nn.Dropout(0.1),
             nn.Conv2d(640, 5, 1, bias=False),
             nn.Sigmoid()
         )

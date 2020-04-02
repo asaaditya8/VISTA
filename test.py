@@ -50,7 +50,7 @@ if __name__ == '__main__':
     for n in cells:
         c1, c2, c3 = transform_coord(pbox[0][n][:4], n)
         print(c1, c2, c3)
-        rec = patches.Rectangle(c1, c2+50, c3+50, edgecolor='r', fill=False, linewidth=2)
+        rec = patches.Rectangle(c1, c2, c3, edgecolor='r', fill=False, linewidth=2)
         ax.add_patch(rec)
 
     tprob = tprob.data.cpu().numpy()
